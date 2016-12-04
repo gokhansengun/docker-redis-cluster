@@ -1,0 +1,97 @@
+version: "2"
+
+services:
+
+  node_1:
+    image: redis:3
+    ports:
+      - "7001:7000"
+    volumes:
+      - ./config:/opt/redis-cluster/conf
+    command: ["redis-server", "/opt/redis-cluster/conf/redis.conf"]
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.11
+
+  node_2:
+    image: redis:3
+    ports:
+      - "7002:7000"
+    volumes:
+      - ./config:/opt/redis-cluster/conf
+    command: ["redis-server", "/opt/redis-cluster/conf/redis.conf"]
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.12
+
+  node_3:
+    image: redis:3
+    ports:
+      - "7003:7000"
+    volumes:
+      - ./config:/opt/redis-cluster/conf
+    command: ["redis-server", "/opt/redis-cluster/conf/redis.conf"]
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.13
+
+  node_4:
+    image: redis:3
+    ports:
+      - "7004:7000"
+    volumes:
+      - ./config:/opt/redis-cluster/conf
+    command: ["redis-server", "/opt/redis-cluster/conf/redis.conf"]
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.14
+
+  node_5:
+    image: redis:3
+    ports:
+      - "7005:7000"
+    volumes:
+      - ./config:/opt/redis-cluster/conf
+    command: ["redis-server", "/opt/redis-cluster/conf/redis.conf"]
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.15
+
+  node_6:
+    image: redis:3
+    ports:
+      - "7006:7000"
+    volumes:
+      - ./config:/opt/redis-cluster/conf
+    command: ["redis-server", "/opt/redis-cluster/conf/redis.conf"]
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.16
+
+  cluster-configurer:
+    image: gsengun/redis-cluster-configurer
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.100
+
+  redis-cli:
+    image: redis:3
+    entrypoint: ["redis-cli", "-c", "-h", "node_1", "-p", "7000"]
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.101
+
+  importer:
+    image: redis:3
+    volumes:
+      - ./scripts:/scripts
+    networks:
+      redis-net:
+        ipv4_address: 172.44.10.102
+
+networks:
+  redis-net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.44.10.0/24
